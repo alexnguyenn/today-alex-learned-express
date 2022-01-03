@@ -35,6 +35,14 @@ const CreatePostMutation = gql`
     }
 `
 
+const PublishPostMutation = gql`
+    mutation publishPost($id: ID!) {
+        publishPost(where: { id: $id } to: PUBLISHED) {
+            id
+        }
+    }
+`
+
 app.post("/create-post", (req, res) => {
     // Check password
     if (req.body.password !== PASSWORD) {
@@ -53,7 +61,15 @@ app.post("/create-post", (req, res) => {
         title: req.body.title,
         description: req.body.description
     }).then(data => {
-        res.send(data)
+        // Publish post
+        client.request(PublishPostMutation, {
+            id: data.createPost.id
+        }).then(data => {
+            res.send(data)
+        }
+        ).catch(err => {
+            res.status(500).send(err)
+        })
     }).catch(err => {
         res.status(500).send(err)
     })
