@@ -2,6 +2,7 @@ const express = require('express')
 const { gql, GraphQLClient } = require('graphql-request')
 const bodyParser = require('body-parser')
 const cors = require('cors')
+const basicAuth = require('express-basic-auth')
 
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config()
@@ -9,6 +10,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 const GRAPHCMS_API_URI = process.env.GRAPHCMS_API_URI
 const GRAPHCMS_API_PAT = process.env.GRAPHCMS_API_PAT
+const USERNAME = process.env.USERNAME
 const PASSWORD = process.env.PASSWORD
 const PORT = process.env.PORT || 5000
 
@@ -16,6 +18,10 @@ const app = express()
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+app.use(basicAuth({
+    users: { [USERNAME]: PASSWORD },
+}))
 
 const client = new GraphQLClient(GRAPHCMS_API_URI, {
     headers: {
@@ -44,12 +50,6 @@ const PublishPostMutation = gql`
 `
 
 app.post("/create-post", (req, res) => {
-    // Check password
-    if (req.body.password !== PASSWORD) {
-        res.status(401).send("Invalid password")
-        return
-    }
-
     // Check if title and description are provided
     if (!req.body.title || !req.body.description) {
         res.status(400).send("Title and description are required")
