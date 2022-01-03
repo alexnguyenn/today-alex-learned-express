@@ -13,9 +13,9 @@ const PASSWORD = process.env.PASSWORD
 const PORT = process.env.PORT || 5000
 
 const app = express()
+app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cors())
 
 const client = new GraphQLClient(GRAPHCMS_API_URI, {
     headers: {
