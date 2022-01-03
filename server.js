@@ -21,6 +21,9 @@ app.use(bodyParser.json());
 
 app.use(basicAuth({
     users: { [USERNAME]: PASSWORD },
+    unauthorizedResponse: req => {
+        return req.auth ? "Invalid username or password" : "No credentials provided"
+    }
 }))
 
 const client = new GraphQLClient(GRAPHCMS_API_URI, {
@@ -33,10 +36,6 @@ const CreatePostMutation = gql`
     mutation createPost($title: String!, $description: RichTextAST!) {
         createPost(data: {title: $title, description: $description}) {
             id
-            title
-            description {
-                markdown
-            }
         }
     }
 `
@@ -52,7 +51,9 @@ const PublishPostMutation = gql`
 app.post("/create-post", (req, res) => {
     // Check if title and description are provided
     if (!req.body.title || !req.body.description) {
-        res.status(400).send("Title and description are required")
+        res.status(400).json({
+            message: "Title and description are required."
+        })
         return
     }
 
@@ -65,13 +66,21 @@ app.post("/create-post", (req, res) => {
         client.request(PublishPostMutation, {
             id: data.createPost.id
         }).then(data => {
-            res.send(data)
+            res.json({
+                message: "Post created and published.",
+                postId: data.publishPost.id
+            })
         }
         ).catch(err => {
-            res.status(500).send(err)
+            res.status(500).json({
+                message: "Successfully created post, but failed to publish it."
+            })
         })
     }).catch(err => {
-        res.status(500).send(err)
+        res.status(500).json({
+            message: "Failed to create post."
+        })
+        
     })
 });
 
