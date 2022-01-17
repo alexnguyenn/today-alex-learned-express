@@ -1,7 +1,9 @@
-## Express backend for [today-i-learned](https://github.com/alexnguyenn/today-i-learned)
+## Express backend for [today-alex-learned-cra](https://github.com/alexnguyenn/today-alex-learned-cra)
 
-Simple Express backend to process and send create post requests from 
-[todayalexlearned.surge.sh](https://todayalexlearned.surge.sh/) to GraphCMS. It is deployed on Heroku. 
+***This project has been moved to [today-alex-learned](https://github.com/alexnguyenn/today-alex-learned)***
+
+Simple Express backend with basic auth to process and send create post requests from 
+~~[todayalexlearned.surge.sh](https://todayalexlearned.surge.sh/)~~ _(no longer available)_ to GraphCMS. It is deployed on Heroku. 
 
 ### Context
 
@@ -17,4 +19,5 @@ So I decided to create an Express backend with basic auth to submit mutation ope
 I did try out [Apollo Server](https://www.npmjs.com/package/apollo-server) with [apollo-datasource-graphql](https://www.npmjs.com/package/apollo-datasource-graphql) 
 but ran into some troubles with processing rich text field. 
 
-**Next step?** Maybe to scrap this and just use Next.js's API Routes :thinking:.
+**Next step?** Maybe to scrap this and just use Next.js's API Routes :thinking:. **EDIT:** And I did just that - this was implemented with Next.js API Routes and NextAuth 
+over at [today-alex-learned](https://github.com/alexnguyenn/today-alex-learned).
